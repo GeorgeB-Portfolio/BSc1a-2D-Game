@@ -20,25 +20,25 @@ function Enemyupdate (scene)
     //Moving up
     if (targetY < enemy.y)
     {
-        enemy.setVelocityY(-200);
+        enemy.setVelocityY(-100);
 
     }
     //Moving down
     else if ( targetY > enemy.y)
     {
-        enemy.setVelocityY(200);
+        enemy.setVelocityY(100);
 
     }
     //Moving left
     if (targetX < enemy.x)
     {
-        enemy.setVelocityX(-200);
+        enemy.setVelocityX(-100);
 
     }
     //Moving right
     else if (targetX > enemy.x)
     {
-        enemy.setVelocityX(200);
+        enemy.setVelocityX(100);
         
     }
 
