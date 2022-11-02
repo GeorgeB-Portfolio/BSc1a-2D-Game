@@ -1,0 +1,68 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>2D Game</title>
+    <script src="JS/phaser.js"></script>
+    <script src="JS/player.js"></script>
+    <script src = "JS/Enemy.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                debug: false
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+var game = new Phaser.Game(config);
+
+function preload ()
+{
+    //For preloading player JS file by sending the game state to the player JS through the this keyword.
+    Playerpreload(this)
+    this.load.image('ground', 'Assets/ground.png');
+    Enemypreload(this)
+    
+}
+
+function create ()
+{
+    ground = this.add.image(400,300, 'ground')
+    ground.setScale(10,8);
+    //For adding the player to the scene through sending the game state to player JS.
+    Enemycreate(this)
+    Playercreate(this)
+
+}
+
+function update ()
+{
+    //For sending game update state to the player JS to add player functionality.
+    Playerupdate(this)
+    Enemyupdate(this)
+}
+
+</script>
+
+</body>
+
+</html>
