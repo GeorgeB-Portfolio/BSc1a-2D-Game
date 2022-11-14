@@ -51,7 +51,7 @@ function create ()
     //For adding the player to the scene through sending the game state to player JS.
     Enemycreate(this)
     Playercreate(this)
-
+    
 }
 
 function update ()
@@ -59,6 +59,15 @@ function update ()
     //For sending game update state to the player JS to add player functionality.
     Playerupdate(this)
     Enemyupdate(this)
+    playerDown(this)
+    playerLeft(this)
+    playerUp(this)
+    playerRight(this)
+    enemyDown(this)
+    enemyLeft(this)
+    enemyUp(this)
+    enemyRight(this)
+    
 }
 
 </script>
