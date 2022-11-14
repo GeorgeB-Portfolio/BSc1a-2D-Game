@@ -1,15 +1,41 @@
 var enemyHealth = 100;
 var enemyDamage = 25;
+var enemies;
 function Enemypreload (scene)
 {
     scene.load.spritesheet('enemy', 'Assets/Enemy.png', { frameWidth: 64, frameHeight: 64 });
     
 }
 
-function Enemycreate (scene)
+function Enemycreate (scene, inPlayer)
 {
-    enemy = scene.physics.add.sprite(200, 300, 'enemy', [46])
-    
+    console.log(inPlayer)
+    enemies = scene.physics.add.group({
+        key: 'enemy',
+        repeat: 2,
+        setXY: { x: 100, y: 100, stepX: 300 }
+    });
+    enemies.children.iterate(function (child){child.health = enemyHealth; child.invuln = 0;});
+    scene.physics.add.overlap(player, enemies, onEnemyOverlapPlayer, null, scene);
+}
+
+function onEnemyOverlapPlayer(inPlayer, enemy)
+{
+    if(inPlayer.anims.currentAnim.key.includes("Attack"))
+    {
+        if (enemy.invuln == 0)
+        {
+            enemy.health -= playerDamage;
+            enemy.invuln = 60;
+        }
+    }
+    else if (playerInvuln == 0)
+    {
+        playerHealth -= enemyDamage;
+        playerInvuln = 60;
+    }
+
+    console.log("Player: " + playerHealth + "        Enemy: " + enemy.health);
 }
 
 function enemyDown (scene)
@@ -61,40 +87,48 @@ function Enemyupdate (scene)
     targetX = player.x
     targetY = player.y
 
-    //Moving up
-    if (targetY < enemy.y - 32)
+    enemies.children.iterate(function (child)
     {
-        enemy.setVelocityY(-100);
-        enemy.anims.play("Up", true);
+        let enemy = child;
+        if (enemy.invuln > 0) enemy.invuln--;
+        //Moving up
+        if (targetY < child.y - 32)
+        {
+            enemy.setVelocityY(-100);
+            enemy.anims.play("Up", true);
 
-    }
-    //Moving down
-    else if ( targetY > enemy.y + 32)
-    {
-        enemy.setVelocityY(100);
-        enemy.anims.play("Down", true);
+        }
+        //Moving down
+        else if ( targetY > enemy.y + 32)
+        {
+            enemy.setVelocityY(100);
+            enemy.anims.play("Down", true);
 
-    }
-    //Moving left
-    if (targetX < enemy.x - 32)
-    {
-        enemy.setVelocityX(-100);
-        enemy.anims.play("Left", true);
+        }
+        //Moving left
+        if (targetX < enemy.x - 32)
+        {
+            enemy.setVelocityX(-100);
+            enemy.anims.play("Left", true);
 
-    }
-    //Moving right
-    else if (targetX > enemy.x + 32)
-    {
-        enemy.setVelocityX(100);
-        enemy.anims.play("Right", true);
+        }
+        //Moving right
+        else if (targetX > enemy.x + 32)
+        {
+            enemy.setVelocityX(100);
+            enemy.anims.play("Right", true);
 
-    }
+        }
 
-    else
-    {
-        enemy.setVelocityX(0)
-        enemy.setVelocityY
-    }
+        else
+        {
+            enemy.setVelocityX(0)
+            enemy.setVelocityY
+        }
 
+        if(enemy.health <= 0){
+            enemy.disableBody(true, true)
+        }
+    });
 
 }

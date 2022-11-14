@@ -1,10 +1,19 @@
 var playerHealth = 100;
 var playerDamage = 50;
 var playerHealthUI;
+var playerInvuln = 0;
+var animResetTimer;
+var currentAnimation = "";
+var facing = "";
+var gameOver = false;
 
 function Playerpreload (scene)
 {
     scene.load.spritesheet('player', 'Assets/Player.png', { frameWidth: 64, frameHeight: 64 });
+    scene.load.spritesheet('playerAttackUp', 'Assets/PlayerAttackUp.png', { frameWidth: 148, frameHeight: 69})
+    scene.load.spritesheet('playerAttackLeft', 'Assets/PlayerAttackLeft.png', { frameWidth: 148, frameHeight: 61})
+    scene.load.spritesheet('playerAttackDown', 'Assets/PlayerAttackDown.png', { frameWidth: 148, frameHeight: 79})
+    scene.load.spritesheet('playerAttackRight', 'Assets/PlayerAttackRight.png', { frameWidth: 148, frameHeight: 55})
 }
 
 
@@ -14,8 +23,12 @@ function Playercreate (scene)
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
     cursors = scene.input.keyboard.createCursorKeys();
+    keys = scene.input.keyboard.addKeys('SPACE')
     //Displaying the health of the player
     playerHealthUI = scene.add.text(10, 10, 'Health: ' + playerHealth, { fontSize: '25px', fill: 'black' });
+    playerDown(scene);
+    player.anims.play('down', true);
+    return player
 
 }
 
@@ -63,35 +76,95 @@ function playerRight (scene)
 
 }
 
-function Playerupdate ()
+function playerAttackUp (scene)
 {
+    scene.anims.create({
+        key: 'PlayerAttackUp', 
+        frames: scene.anims.generateFrameNumbers('playerAttackUp', { start: 5, end: 5 }), 
+        frameRate: 10,
+        repeat: -1
+    });
+
+}
+
+function playerAttackLeft (scene)
+{
+    
+    scene.anims.create({
+        key: 'PlayerAttackLeft', 
+        frames: scene.anims.generateFrameNumbers('playerAttackLeft', { start: 5, end: 5 }), 
+        frameRate: 10,
+        repeat: -1
+    });
+    
+}
+
+function playerAttackDown (scene)
+{
+    
+    scene.anims.create({
+        key: 'PlayerAttackDown', 
+        frames: scene.anims.generateFrameNumbers('playerAttackDown', { start: 5, end: 5 }), 
+        frameRate: 10,
+        repeat: -1
+    });
+    
+}
+
+function playerAttackRight (scene)
+{
+    
+    scene.anims.create({
+        key: 'PlayerAttackRight', 
+        frames: scene.anims.generateFrameNumbers('playerAttackRight', { start: 5, end: 5 }), 
+        frameRate: 10,
+        repeat: -1
+    });
+    
+}
+
+function Playerupdate (scene)
+{
+    if (gameOver){
+        gameOver = false
+        scene.scene.restart();
+    }
+
+    //Displaying the health of the player
+    playerHealthUI.setText('Health: ' + playerHealth);
+
+    if (playerInvuln > 0) playerInvuln--;
     //Moving left
     if (cursors.left.isDown)
     {
         player.setVelocityX(-200);
         player.anims.play("left", true);
-
+        facing = "left"
+        clearTimeout(animResetTimer);
     }
     //Moving right
     else if (cursors.right.isDown)
     {
         player.setVelocityX(200);
         player.anims.play("right", true)
-
+        facing = "right"
+        clearTimeout(animResetTimer);
     }
     //Moving up
     else if (cursors.up.isDown)
     {
         player.setVelocityY(-200);
         player.anims.play("up", true)
-        
+        facing = "up"
+        clearTimeout(animResetTimer);
     }
     //Moving down
     else if (cursors.down.isDown)
     {
         player.setVelocityY(200);
         player.anims.play("down", true);
-
+        facing = "down"
+        clearTimeout(animResetTimer);
     }
     //When none are pressed (not moving)
     else
@@ -102,4 +175,37 @@ function Playerupdate ()
 
     }
 
+    if(Phaser.Input.Keyboard.JustDown(keys.SPACE))
+    {
+        if (!player.anims.currentAnim.key.includes("Attack")) currentAnimation = player.anims.currentAnim;
+        clearTimeout(animResetTimer);
+        if(facing == "up"){
+            player.anims.play("PlayerAttackUp", true);
+        }
+
+        if(facing == "left"){
+            player.anims.play("PlayerAttackLeft", true);
+        }
+
+        if(facing == "down"){
+            player.anims.play("PlayerAttackDown", true)
+        }
+
+        if(facing == "right"){
+            player.anims.play("PlayerAttackRight", true)
+        }
+        
+        animResetTimer = setTimeout(resetAnim, 100, currentAnimation);
+    }
+
+    if(playerHealth <= 0){
+        gameOver = true
+        playerHealth = 100;
+    }
+
+}
+
+function resetAnim(anim)
+{
+    player.anims.play(anim, true);
 }
