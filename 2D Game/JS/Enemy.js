@@ -1,6 +1,8 @@
 var enemyHealth = 100;
 var enemyDamage = 25;
 var enemies;
+var wave = 1
+var totalEnemies = 0
 function Enemypreload (scene)
 {
     scene.load.spritesheet('enemy', 'Assets/Enemy.png', { frameWidth: 64, frameHeight: 64 });
@@ -9,12 +11,15 @@ function Enemypreload (scene)
 
 function Enemycreate (scene, inPlayer)
 {
-    console.log(inPlayer)
-    enemies = scene.physics.add.group({
-        key: 'enemy',
-        repeat: 2,
-        setXY: { x: 100, y: 100, stepX: 300 }
-    });
+    if(wave == 1){
+        enemies = scene.physics.add.group({
+            key: 'enemy',
+            repeat: 2,
+            setXY: { x: 100, y: 100, stepX: 300 },
+
+        });
+        totalEnemies = 3
+    }
     enemies.children.iterate(function (child){child.health = enemyHealth; child.invuln = 0;});
     scene.physics.add.overlap(player, enemies, onEnemyOverlapPlayer, null, scene);
 }
@@ -27,15 +32,22 @@ function onEnemyOverlapPlayer(inPlayer, enemy)
         {
             enemy.health -= playerDamage;
             enemy.invuln = 60;
+            if(enemy.health <= 0){
+                enemy.disableBody(true, true)
+                totalEnemies --
+                if(totalEnemies == 0)
+                {
+                    wave ++
+                    console.log(wave)
+                }
+            }
         }
     }
     else if (playerInvuln == 0)
     {
         playerHealth -= enemyDamage;
-        playerInvuln = 60;
+        playerInvuln = 240;
     }
-
-    console.log("Player: " + playerHealth + "        Enemy: " + enemy.health);
 }
 
 function enemyDown (scene)
@@ -91,6 +103,7 @@ function Enemyupdate (scene)
     {
         let enemy = child;
         if (enemy.invuln > 0) enemy.invuln--;
+        
         //Moving up
         if (targetY < child.y - 32)
         {
@@ -125,10 +138,8 @@ function Enemyupdate (scene)
             enemy.setVelocityX(0)
             enemy.setVelocityY
         }
-
-        if(enemy.health <= 0){
-            enemy.disableBody(true, true)
-        }
+        
+        
     });
-
+   
 }

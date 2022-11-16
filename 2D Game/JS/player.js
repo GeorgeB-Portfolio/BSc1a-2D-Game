@@ -10,10 +10,10 @@ var gameOver = false;
 function Playerpreload (scene)
 {
     scene.load.spritesheet('player', 'Assets/Player.png', { frameWidth: 64, frameHeight: 64 });
-    scene.load.spritesheet('playerAttackUp', 'Assets/PlayerAttackUp.png', { frameWidth: 148, frameHeight: 69})
-    scene.load.spritesheet('playerAttackLeft', 'Assets/PlayerAttackLeft.png', { frameWidth: 148, frameHeight: 61})
-    scene.load.spritesheet('playerAttackDown', 'Assets/PlayerAttackDown.png', { frameWidth: 148, frameHeight: 79})
-    scene.load.spritesheet('playerAttackRight', 'Assets/PlayerAttackRight.png', { frameWidth: 148, frameHeight: 55})
+    scene.load.spritesheet('playerAttackUp', 'Assets/PlayerAttackUpTest.png', { frameWidth: 86, frameHeight: 69})
+    scene.load.spritesheet('playerAttackLeft', 'Assets/PlayerAttackLeftTest.png', { frameWidth: 90, frameHeight: 51})
+    scene.load.spritesheet('playerAttackDown', 'Assets/PlayerAttackDownTest.png', { frameWidth: 86, frameHeight: 72})
+    scene.load.spritesheet('playerAttackRight', 'Assets/PlayerAttackRightTest.png', { frameWidth: 92, frameHeight: 52})
 }
 
 
@@ -80,7 +80,7 @@ function playerAttackUp (scene)
 {
     scene.anims.create({
         key: 'PlayerAttackUp', 
-        frames: scene.anims.generateFrameNumbers('playerAttackUp', { start: 5, end: 5 }), 
+        frames: scene.anims.generateFrameNumbers('playerAttackUp', { start: 0, end: 0 }), 
         frameRate: 10,
         repeat: -1
     });
@@ -92,7 +92,7 @@ function playerAttackLeft (scene)
     
     scene.anims.create({
         key: 'PlayerAttackLeft', 
-        frames: scene.anims.generateFrameNumbers('playerAttackLeft', { start: 5, end: 5 }), 
+        frames: scene.anims.generateFrameNumbers('playerAttackLeft', { start: 0, end: 0 }), 
         frameRate: 10,
         repeat: -1
     });
@@ -104,7 +104,7 @@ function playerAttackDown (scene)
     
     scene.anims.create({
         key: 'PlayerAttackDown', 
-        frames: scene.anims.generateFrameNumbers('playerAttackDown', { start: 5, end: 5 }), 
+        frames: scene.anims.generateFrameNumbers('playerAttackDown', { start: 0, end: 0 }), 
         frameRate: 10,
         repeat: -1
     });
@@ -116,7 +116,7 @@ function playerAttackRight (scene)
     
     scene.anims.create({
         key: 'PlayerAttackRight', 
-        frames: scene.anims.generateFrameNumbers('playerAttackRight', { start: 5, end: 5 }), 
+        frames: scene.anims.generateFrameNumbers('playerAttackRight', { start: 0, end: 0 }), 
         frameRate: 10,
         repeat: -1
     });
