@@ -6,19 +6,23 @@ var animResetTimer;
 var currentAnimation = "";
 var facing = "";
 var gameOver = false;
+var health;
 
 function Playerpreload (scene)
 {
+    //preloading all player sprites and the health consumable sprite
     scene.load.spritesheet('player', 'Assets/Player.png', { frameWidth: 64, frameHeight: 64 });
     scene.load.spritesheet('playerAttackUp', 'Assets/PlayerAttackUpTest.png', { frameWidth: 86, frameHeight: 69})
     scene.load.spritesheet('playerAttackLeft', 'Assets/PlayerAttackLeftTest.png', { frameWidth: 90, frameHeight: 51})
     scene.load.spritesheet('playerAttackDown', 'Assets/PlayerAttackDownTest.png', { frameWidth: 86, frameHeight: 72})
     scene.load.spritesheet('playerAttackRight', 'Assets/PlayerAttackRightTest.png', { frameWidth: 92, frameHeight: 52})
+    scene.load.spritesheet('health', 'Assets/Health.png', { frameWidth: 32, frameHeight: 32 });
 }
 
 
 function Playercreate (scene)
 {
+    //Creating the player in the scene, collision with the border and adding the spacebar key to be used for attacking later
     player = scene.physics.add.sprite(400, 300, 'player', [46])
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
@@ -29,9 +33,9 @@ function Playercreate (scene)
     playerDown(scene);
     player.anims.play('down', true);
     return player
-
 }
 
+//Player moving down animation
 function playerDown (scene)
 {
     scene.anims.create({
@@ -43,6 +47,7 @@ function playerDown (scene)
 
 }
 
+//Player moving left animation
 function playerLeft (scene)
 {
     scene.anims.create({
@@ -54,6 +59,7 @@ function playerLeft (scene)
 
 }
 
+//Player moving up animation
 function playerUp (scene)
 {
     scene.anims.create({
@@ -65,6 +71,7 @@ function playerUp (scene)
 
 }
 
+//player moving right animation
 function playerRight (scene)
 {
     scene.anims.create({
@@ -76,6 +83,7 @@ function playerRight (scene)
 
 }
 
+//Player attacking upwards animation
 function playerAttackUp (scene)
 {
     scene.anims.create({
@@ -87,6 +95,7 @@ function playerAttackUp (scene)
 
 }
 
+//Player attacking left animation
 function playerAttackLeft (scene)
 {
     
@@ -99,6 +108,7 @@ function playerAttackLeft (scene)
     
 }
 
+//Player attacking down animation
 function playerAttackDown (scene)
 {
     
@@ -111,6 +121,7 @@ function playerAttackDown (scene)
     
 }
 
+//Player attacking right animation
 function playerAttackRight (scene)
 {
     
@@ -125,9 +136,11 @@ function playerAttackRight (scene)
 
 function Playerupdate (scene)
 {
+    //Resetting the scene if it's game over (player dies)
     if (gameOver){
         gameOver = false
         scene.scene.restart();
+        wave = 1;
     }
 
     //Displaying the health of the player
@@ -175,6 +188,7 @@ function Playerupdate (scene)
 
     }
 
+    //Calling for the attack animations when space key is pressed down (space bar)
     if(Phaser.Input.Keyboard.JustDown(keys.SPACE))
     {
         if (!player.anims.currentAnim.key.includes("Attack")) currentAnimation = player.anims.currentAnim;
@@ -198,6 +212,7 @@ function Playerupdate (scene)
         animResetTimer = setTimeout(resetAnim, 100, currentAnimation);
     }
 
+    //Game over the players health reaches 0 or below
     if(playerHealth <= 0){
         gameOver = true
         playerHealth = 100;
@@ -205,6 +220,7 @@ function Playerupdate (scene)
 
 }
 
+//reset the player animation
 function resetAnim(anim)
 {
     player.anims.play(anim, true);
