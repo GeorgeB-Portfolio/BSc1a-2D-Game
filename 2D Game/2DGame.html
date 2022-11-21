@@ -23,7 +23,7 @@
         physics: {
             default: 'arcade',
             arcade: {
-                debug: true
+                debug: false
             }
         },
         scene: {
@@ -37,7 +37,7 @@ var game = new Phaser.Game(config);
 var player;
 function preload ()
 {
-    //For preloading player JS file by sending the game state to the player JS through the this keyword.
+    //For preloading the player and enemy through sending the scene state to their respective JS files.
     Playerpreload(this)
     this.load.image('ground', 'Assets/ground.png');
     Enemypreload(this, player)
@@ -48,14 +48,14 @@ function create ()
 {
     ground = this.add.image(400,300, 'ground')
     ground.setScale(10,8);
-    //For adding the player to the scene through sending the game state to player JS.
+    //For adding the player and enemy to the scene through sending the game state to them.
     player = Playercreate(this)
     Enemycreate(this, player)   
 }
 
 function update ()
 {
-    //For sending game update state to the player JS to add player functionality.
+    //For sending game update state to the player and enemy JS to give functions in them access to the scene.
     Playerupdate(this)
     Enemyupdate(this)
     playerDown(this)

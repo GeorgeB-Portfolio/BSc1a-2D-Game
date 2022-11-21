@@ -7,6 +7,7 @@ var currentAnimation = "";
 var facing = "";
 var gameOver = false;
 var health;
+var controlsUI;
 
 function Playerpreload (scene)
 {
@@ -32,6 +33,7 @@ function Playercreate (scene)
     playerHealthUI = scene.add.text(10, 10, 'Health: ' + playerHealth, { fontSize: '25px', fill: 'black' });
     playerDown(scene);
     player.anims.play('down', true);
+    controlsUI = scene.add.text(5, 570, 'Arrow keys for movement, space for attacking', {fontSize: '25px', fill: 'black'});
     return player
 }
 
@@ -136,8 +138,9 @@ function playerAttackRight (scene)
 
 function Playerupdate (scene)
 {
-    //Resetting the scene if it's game over (player dies)
+    //Resetting the scene if the games over (called either when the player dies or if the player presses r on the victory screen)
     if (gameOver){
+        playerHealth = 100;
         gameOver = false
         scene.scene.restart();
         wave = 1;
@@ -188,7 +191,7 @@ function Playerupdate (scene)
 
     }
 
-    //Calling for the attack animations when space key is pressed down (space bar)
+    //Calling for the attack animations when space key is pressed down
     if(Phaser.Input.Keyboard.JustDown(keys.SPACE))
     {
         if (!player.anims.currentAnim.key.includes("Attack")) currentAnimation = player.anims.currentAnim;
@@ -215,7 +218,6 @@ function Playerupdate (scene)
     //Game over the players health reaches 0 or below
     if(playerHealth <= 0){
         gameOver = true
-        playerHealth = 100;
     }
 
 }

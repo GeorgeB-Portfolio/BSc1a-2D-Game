@@ -2,7 +2,9 @@ var enemyHealth = 100;
 var enemyDamage = 25;
 var enemies;
 var wave = 1
+var lastFrameTime = Date.now();
 var totalEnemies = 0
+var victory = false;
 function Enemypreload (scene)
 {
     //load enemy sprite
@@ -11,6 +13,8 @@ function Enemypreload (scene)
 
 function Enemycreate (scene, inPlayer)
 {
+    //Adding the r key as as option which is later used for resetting the scene after vicotry.
+    keys2 = scene.input.keyboard.addKeys('R')
     //create enemies of wave 1
     if(wave == 1){
         //spawning 3 enemies
@@ -76,6 +80,17 @@ function Enemycreate (scene, inPlayer)
         totalEnemies = 8
          
     }
+
+    //Victory screen
+    if(wave == 6)
+    {
+        //Text at the center of the screen saying "You Win!"
+        victory = scene.add.text(150, 250, 'You Win!', {fontSize: '100px', fill: 'black'});
+        //Text under the victory message telling the player how to restart.
+        restart = scene.add.text(130, 350, 'Press r to restart', {fontSize: '50px', fill: 'black'})
+        victory = true
+    }
+
     //Giving all enemy created in the enemies group health and the invulnerability timer
     enemies.children.iterate(function (child){child.health = enemyHealth; child.invuln = 0;});
     //Player and enemy overlap for both player and enemy attacking
@@ -94,16 +109,22 @@ function onEnemyOverlapPlayer(inPlayer, enemy)
         //If the enemy is not invulnerable then taking damage and gaining brief invulnerability (less than the player as they can pile up a lot more on the player)
         if (enemy.invuln == 0)
         {
+            //Enemy takes damage equivalent to the players damage
             enemy.health -= playerDamage;
-            enemy.invuln = 60;
+            //enemy gains temporary invulnerabilty to damage so they don't just instantly die from one press.
+            enemy.invuln = Math.floor(400 / (Date.now() - lastFrameTime));
             if(enemy.health <= 0){
+                //enemy dying when at 0 or less health.
                 enemy.disableBody(true, true)
+                //taking away from total number of enemies so that once all enemies have died it will reach 0 and begin new wave.
                 totalEnemies --
+                //Creating the health collectible where the enemy died.
                 health.create(enemy.x, enemy.y, "health")
+
+                //Progressing to next wave if no enemies are left.
                 if(totalEnemies == 0)
                 {
                     wave ++
-                    console.log(wave)
                     Enemycreate(this)
                 }
             }
@@ -113,7 +134,7 @@ function onEnemyOverlapPlayer(inPlayer, enemy)
     else if (playerInvuln == 0)
     {
         playerHealth -= enemyDamage;
-        playerInvuln = 240;
+        playerInvuln = Math.floor(1500 / (Date.now() - lastFrameTime));
     }
 }
 
@@ -121,16 +142,21 @@ function onEnemyOverlapPlayer(inPlayer, enemy)
 function playerHealing(inPlayer, health)
 {
     //making sure adding the health increase wouldn't go over 100 then adding health to the player if.
-    if(playerHealth + 2 < 100 )
+    if(playerHealth + 5 < 100 )
     {
-        playerHealth = playerHealth + 2
+        playerHealth = playerHealth + 5
         health.disableBody(true,true)
     }
     //If it would add up to more than 100 then just sets the health to 100 (ensures health is never greater than 100)
-    else
+    else if(playerHealth < 100)
     {
         playerHealth = 100
         health.disableBody(true,true)
+    }
+    //If the player health is equal to 100 then just stays at 100 and doesn't collect the health consumable
+    else if(playerHealth = 100)
+    {
+        playerHealth = 100
     }
 }
 
@@ -187,7 +213,7 @@ function Enemyupdate (scene)
     //setting the target position to the players.
     targetX = player.x
     targetY = player.y
-    
+    lastFrameTime = Date.now();
     enemies.children.iterate(function (child)
     {
         let enemy = child;
@@ -228,6 +254,15 @@ function Enemyupdate (scene)
         {
             enemy.setVelocityX(0)
             enemy.setVelocityY
+        }
+
+        //When the player kills all the enemies of the final wave victory is set to true which then has it constantly true so this condition can be checked in case the player presses r to restart
+        if(victory == true)
+        {
+            if(Phaser.Input.Keyboard.JustDown(keys2.R))
+        {
+            gameOver = true
+        }
         }
                 
     });
